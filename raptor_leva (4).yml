@@ -1,0 +1,40 @@
+name: RAPTOR Leva Fetch
+
+on:
+  schedule:
+    # Ogni 30 minuti dalle 6:00 alle 18:30 UTC (8:00-20:30 ora italiana estate)
+    - cron: '0,30 6-18 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  fetch-leva:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install yfinance
+
+      - name: Esegui RAPTOR Leva Fetch
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python raptor_leva_fetch.py
+
+      - name: Commit e push raptor_leva.json
+        run: |
+          git config user.name  "RAPTOR Bot"
+          git config user.email "raptor-bot@noreply.github.com"
+          git add raptor_leva.json perf_history.json explosive_alerted.json sbb_flip_log.json sbb2_flip_log.json
+          git diff --staged --quiet || git commit -m "⚡ RAPTOR leva $(date +'%d/%m/%Y %H:%M')"
+          git pull --rebase origin main
+          git push
