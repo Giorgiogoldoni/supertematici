@@ -1,0 +1,164 @@
+ticker;nome;gruppo_attuale;settore_proposto
+AIAA.MI;WisdomTree AI & Tech ETF;ai_tech;AI_TECH
+AIAI.MI;L&G Artificial Intelligence ETF;ai_tech;AI_TECH
+AI4UJ.MI;iShares Automation & Robotics;ai_tech;ROBOTICA
+AINF.MI;iShares AI Infrastructure UCITS ETF;ai_tech;AI_TECH
+AIQE.MI;iShares AI Equity ETF;ai_tech;AI_TECH
+GOAI.MI;Invesco MSCI World ESG UCITS ETF;ai_tech;DROP_FATTORIALE
+WTAI.MI;WisdomTree AI ETF;ai_tech;AI_TECH
+JEDI.MI;Amundi MSCI AI ETF;ai_tech;AI_TECH
+XSGI.MI;Xtrackers AI & Big Data ETF;ai_tech;AI_TECH
+GDIG.MI;iShares Digital Security ETF;ai_tech;CYBERSECURITY
+DGTL.MI;Rize Digital Economy ETF;ai_tech;DIGITALE_ECOMMERCE_FINTECH
+CLOU.MI;WisdomTree Cloud Computing ETF;ai_tech;AI_TECH
+CTEK.MI;Amundi PEA Digital Economy;ai_tech;DIGITALE_ECOMMERCE_FINTECH
+XCTE.MI;Xtrackers Cybersecurity ETF;ai_tech;CYBERSECURITY
+XDER.MI;Xtrackers Digital Enablers ETF;ai_tech;DIGITALE_ECOMMERCE_FINTECH
+FAMTEL.MI;Fineco AM MSCI World IT Sustainable UCITS ETF;ai_tech;AI_TECH
+ARMI.MI;VanEck Defense ETF;difesa;DIFESA
+ARMR.MI;Amundi Future of Defence ETF;difesa;DIFESA
+DFND.MI;Rize Defence Innovation ETF;difesa;DIFESA
+DFNS.MI;HANetf Future of Defence ETF;difesa;DIFESA
+WDEF.MI;WisdomTree Defence ETF;difesa;DIFESA
+LOCK.MI;iShares Aerospace & Defence ETF;difesa;DIFESA
+BUG.MI;Global X Cybersecurity ETF;difesa;CYBERSECURITY
+CYBO.MI;Ossiam Cyber Security ETF;difesa;CYBERSECURITY
+WCBR.MI;WisdomTree Cybersecurity ETF;difesa;CYBERSECURITY
+VPN.MI;Global X Data Center ETF;difesa;INFRASTRUTTURE
+ICBR.MI;iShares Cyber Security & Tech UCITS ETF;difesa;CYBERSECURITY
+FAMMAI.MI;Fineco AM MSCI ACWI Cyber Security UCITS ETF;difesa;CYBERSECURITY
+ISPY.MI;L&G Cyber Security UCITS ETF;difesa;CYBERSECURITY
+RENW.MI;HANetf S&P Global Clean Energy;energia;ENERGIA_RINNOVABILE
+RNRG.MI;Rize Sustainable Future Energy;energia;ENERGIA_RINNOVABILE
+REUS.MI;Amundi MSCI New Energy ETF;energia;ENERGIA_RINNOVABILE
+SOLR.MI;Global X Solar Energy ETF;energia;ENERGIA_RINNOVABILE
+HDRO.MI;HANetf Hydrogen Economy ETF;energia;ENERGIA_RINNOVABILE
+HTWO.MI;L&G Hydrogen Economy ETF;energia;ENERGIA_RINNOVABILE
+HYGN.MI;VanEck Hydrogen Economy ETF;energia;ENERGIA_RINNOVABILE
+VOLT.MI;Amundi MSCI New Energy Transition;energia;ENERGIA_RINNOVABILE
+ELCR.MI;iShares Global Clean Energy ETF;energia;ENERGIA_RINNOVABILE
+WNDE.MI;WisdomTree New Energy ETF;energia;ENERGIA_RINNOVABILE
+WNDY.MI;WisdomTree Wind Energy ETF;energia;ENERGIA_RINNOVABILE
+WRNW.MI;WisdomTree Renewable Energy ETF;energia;ENERGIA_RINNOVABILE
+NRJC.MI;Amundi Energy Transition ETF;energia;ENERGIA_RINNOVABILE
+EEA.MI;iShares MSCI Europe ESG ETF;energia;DROP_FATTORIALE
+GCLE.MI;iShares Global Clean Energy UCITS;energia;ENERGIA_RINNOVABILE
+NCLR.MI;VanEck Uranium & Nuclear ETF;energia;NUCLEARE_URANIO
+NUCL.MI;Sprott Uranium Miners ETF;energia;NUCLEARE_URANIO
+U3O8.MI;Global X Uranium ETF;energia;NUCLEARE_URANIO
+URNJ.MI;Sprott Junior Uranium Miners ETF;energia;NUCLEARE_URANIO
+OIH.MI;VanEck Oil Services ETF;energia;ENERGIA_FOSSILE
+XNGI.MI;Xtrackers MSCI World Energy ETF;energia;SETTORE_AMPIO_VALUTARE
+ICLN;iShares Global Clean Energy USD;energia;ENERGIA_RINNOVABILE
+HEAL.MI;iShares Healthcare Innovation ETF;salute;SALUTE_BIOTECH
+BIOT.MI;iShares Nasdaq Biotechnology;salute;SALUTE_BIOTECH
+CURE.MI;Global X Genomics & Biotechnology;salute;SALUTE_BIOTECH
+DOCT.MI;Amundi MSCI Healthcare ETF;salute;SALUTE_BIOTECH
+GNOM.MI;iShares Genomics Immunology ETF;salute;SALUTE_BIOTECH
+WDNA.MI;WisdomTree Biorevolution ETF;salute;SALUTE_BIOTECH
+GENDEE.MI;Rize Medical Technology ETF;salute;SALUTE_BIOTECH
+EDOC.MI;Global X Telemedicine ETF;salute;SALUTE_BIOTECH
+AGED.MI;iShares Ageing Population ETF;salute;SALUTE_BIOTECH
+XGEN.MI;Xtrackers MSCI World Health;salute;SALUTE_BIOTECH
+XNNV.MI;Xtrackers Artificial Intelligence;salute;AI_TECH
+LABL.MI;WisdomTree Food Innovation ETF;salute;AGRIFOOD
+BKCH.MI;Global X Blockchain ETF;crypto;CRYPTO_BLOCKCHAIN
+BTC.MI;ETC Group Physical Bitcoin;crypto;CRYPTO_BLOCKCHAIN
+DAPP.MI;VanEck Crypto & Blockchain Innovators;crypto;CRYPTO_BLOCKCHAIN
+WEB3.MI;Bitwise Web3 ETF;crypto;CRYPTO_BLOCKCHAIN
+BTECH.MI;iShares Blockchain Technology ETF;crypto;CRYPTO_BLOCKCHAIN
+BTECJ.MI;iShares Blockchain JPY Hedged;crypto;CRYPTO_BLOCKCHAIN
+BLTH.MI;Invesco CoinShares Blockchain ETF;crypto;CRYPTO_BLOCKCHAIN
+ECAR.MI;iShares Electric Vehicles ETF;mobilita;MOBILITA_EV
+EMOVE.MI;Amundi Future Mobility ETF;mobilita;MOBILITA_EV
+EMOVJ.MI;Amundi Future Mobility JPY Hedged;mobilita;MOBILITA_EV
+DRVE.MI;Rize Electric Vehicle ETF;mobilita;MOBILITA_EV
+AUCO.MI;L&G Eaton Vance Automation ETF;mobilita;ROBOTICA
+BATT.MI;Global X Lithium & Battery Tech;mobilita;MOBILITA_EV
+LITU.MI;WisdomTree Battery Solutions ETF;mobilita;MOBILITA_EV
+LITM.MI;iShares Lithium & Battery ETF;mobilita;MOBILITA_EV
+INFR.MI;iShares Global Infrastructure ETF;infrastrutture;INFRASTRUTTURE
+PAVE.MI;Global X US Infrastructure ETF;infrastrutture;INFRASTRUTTURE
+EPRA.MI;iShares Developed Markets Property Yield;infrastrutture;INFRASTRUTTURE
+EPRE.MI;SPDR Global Real Estate ETF;infrastrutture;INFRASTRUTTURE
+SCITY.MI;iShares Smart City Infrastructure;infrastrutture;INFRASTRUTTURE
+CITY.MI;Amundi Smart City ETF;infrastrutture;INFRASTRUTTURE
+CIT.MI;Global X Smart City ETF;infrastrutture;INFRASTRUTTURE
+CITE.MI;iShares Digitalisation ETF;infrastrutture;INFRASTRUTTURE
+XLPE.MI;SPDR S&P US Consumer Discretionary;infrastrutture;SETTORE_AMPIO_VALUTARE
+XRES.MI;Xtrackers MSCI World Real Estate;infrastrutture;INFRASTRUTTURE
+COPM.MI;iShares Copper Producers ETF;risorse;MATERIE_PRIME
+COPR.MI;Global X Copper Miners ETF;risorse;MATERIE_PRIME
+COPX.MI;Global X Copper ETF;risorse;MATERIE_PRIME
+CROP.MI;iShares Agribusiness ETF;risorse;MATERIE_PRIME
+GDX.MI;VanEck Gold Miners ETF;risorse;MATERIE_PRIME
+GDXJ.MI;VanEck Junior Gold Miners ETF;risorse;MATERIE_PRIME
+REMX.MI;VanEck Rare Earth & Strategic Metals;risorse;MATERIE_PRIME
+RARE.MI;VanEck Rare Earth ETF;risorse;MATERIE_PRIME
+METL.MI;WisdomTree Industrial Metals ETF;risorse;MATERIE_PRIME
+METAA.MI;Amundi MSCI Metals & Mining;risorse;MATERIE_PRIME
+METAJ.MI;Amundi MSCI Metals & Mining JPY;risorse;MATERIE_PRIME
+METE.MI;iShares MSCI Global Metals;risorse;MATERIE_PRIME
+SILV.MI;iShares Silver ETF;risorse;MATERIE_PRIME
+WSLV.MI;WisdomTree Physical Silver ETF;risorse;MATERIE_PRIME
+VEGI.MI;iShares Agribusiness ETF EUR;risorse;MATERIE_PRIME
+FOFD.MI;Rize Food Revolution ETF;risorse;AGRIFOOD
+GSM.MI;Global X Silver Miners ETF;risorse;MATERIE_PRIME
+FAMAMW.MI;Fineco AM MSCI World Metals & Mining UCITS ETF;risorse;MATERIE_PRIME
+EBIZ.MI;Global X E-commerce ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+EBUY.MI;Amundi MSCI E-commerce ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+ECOM.MI;L&G Ecommerce Logistics UCITS ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+DPAY.MI;Amundi Digital Economy ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+FINX.MI;Global X FinTech ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+INQQ.MI;iShares EM Digital Economy ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+SNSR.MI;Global X Internet of Things ETF;digitale;DIGITALE_ECOMMERCE_FINTECH
+XFNT.MI;Xtrackers FinTech Innovation;digitale;DIGITALE_ECOMMERCE_FINTECH
+XMOV.MI;Xtrackers Future Mobility ETF;digitale;MOBILITA_EV
+XDG3.MI;Xtrackers Digital Disruption;digitale;DIGITALE_ECOMMERCE_FINTECH
+XDG6.MI;Xtrackers Digital Infrastructure;digitale;INFRASTRUTTURE
+XDG7.MI;Xtrackers Digital Payments;digitale;DIGITALE_ECOMMERCE_FINTECH
+XDGI.MI;Xtrackers Digital Globalisation;digitale;DIGITALE_ECOMMERCE_FINTECH
+FAMMWF.MI;Fineco AM MSCI World Financials UCITS ETF;digitale;DROP_FUORI_TEMA
+ESPO.MI;VanEck Video Gaming & Esports ETF;media;MEDIA_GAMING
+ESPY.MI;L&G Cyber Security Innovation UCITS ETF;media;CYBERSECURITY
+ESGO.MI;Global X Video Games & Esports ETF;media;MEDIA_GAMING
+MCHT.MI;Invesco MSCI China Technology UCITS ETF;media;SETTORE_AMPIO_VALUTARE
+MTVS.MI;WisdomTree Metaverse ETF;media;MEDIA_GAMING
+MTAV.MI;iShares Metaverse UCITS ETF;media;MEDIA_GAMING
+GLUX.MI;Amundi S&P Global Luxury ETF;media;MEDIA_GAMING
+BRIJ.MI;Global X European Infrastructure Dev UCITS ETF;media;INFRASTRUTTURE
+HNSC.MI;iShares Hang Seng Tech ETF;media;SETTORE_AMPIO_VALUTARE
+XS8R.MI;Xtrackers S&P 500 Info Tech;media;SETTORE_AMPIO_VALUTARE
+XG11.MI;Xtrackers MSCI World Growth ETF;media;DROP_FATTORIALE
+XG12.MI;Xtrackers MSCI World Value ETF;media;DROP_FATTORIALE
+AQWA.MI;iShares Global Water ETF;acqua;ACQUA_AMBIENTE
+WATC.MI;Amundi MSCI Water UCITS ETF;acqua;ACQUA_AMBIENTE
+WTRE.MI;WisdomTree Water ETF;acqua;ACQUA_AMBIENTE
+GLUG.MI;iShares Global Water UCITS ETF;acqua;ACQUA_AMBIENTE
+HYDE.MI;VanEck Circular Economy ETF;acqua;ACQUA_AMBIENTE
+SDG9.MI;iShares MSCI Global Sustainable;acqua;DROP_FATTORIALE
+WGRO.MI;WisdomTree Global Growth ETF;acqua;DROP_FATTORIALE
+ROBO.MI;Robo Global Robotics ETF;acqua;ROBOTICA
+BOTZ.MI;Global X Robotics & AI ETF;acqua;AI_TECH
+SMH.MI;VanEck Semiconductor ETF;semiconduttori;SEMICONDUTTORI
+SEME.MI;iShares MSCI Global Semiconductors;semiconduttori;SEMICONDUTTORI
+CHIP.MI;Amundi PHLX Semiconductor ETF;semiconduttori;SEMICONDUTTORI
+FCHP.DE;Franklin FTSE Semiconductor ETF;semiconduttori;SEMICONDUTTORI
+USTEC.MI;iShares NASDAQ 100 UCITS ETF;semiconduttori;SEMICONDUTTORI
+FAMMWS.MI;Fineco AM MSCI World Semiconductors UCITS ETF;semiconduttori;SEMICONDUTTORI
+HERU.MI;HANetf European Equity ETF;altro;DROP_FATTORIALE
+DMAT.MI;iShares Diversified Materials ETF;altro;MATERIE_PRIME
+ROE.MI;iShares Return on Equity ETF;altro;DROP_FATTORIALE
+QNTM.MI;VanEck Quantum Computing UCITS ETF;altro;AI_TECH
+QUAD.MI;Invesco Quantitative ETF;altro;DROP_FATTORIALE
+RAYZ.MI;Rize Sustainable Future Food ETF;altro;AGRIFOOD
+MILL.MI;Global X Millennials ETF;altro;DROP_FATTORIALE
+MLPS.MI;Global X MLP ETF;altro;DROP_FATTORIALE
+WMGT.MI;WisdomTree Quality Dividend ETF;altro;DROP_FATTORIALE
+WBLK.MI;WisdomTree Blockchain ETF;altro;CRYPTO_BLOCKCHAIN
+ISAG.MI;iShares Ageing Population UCITS ETF EUR;altro;SALUTE_BIOTECH
+KWBE.MI;L&G ROBO Global Robotics ETF;altro;ROBOTICA
+IVAI.MI;Invesco Artificial Intelligence UCITS ETF;altro;AI_TECH
+IVDF.DE;Invesco Defence Innovation ETF;altro;DIFESA
+CAUT.MI;iShares Automation & Robotics ETF;altro;ROBOTICA
+FAMWCS.MI;Fineco AM MSCI World Consumer Staples UCITS ETF;altro;SETTORE_AMPIO_VALUTARE
