@@ -107,9 +107,16 @@ SLEEP_BETWEEN_BATCH = 3  # secondi, per non farsi rate-limitare da Yahoo
 HISTORY_PERIOD = "max"   # storico massimo disponibile per ETF (per ML futuro)
 
 # ── SUPER BEST BUY 2 (parametri, allineati a raptor-leva) ──────────────────
-SAR_FLIP_WINDOW = 2      # barre entro cui il flip SAR e' considerato "fresco"
-SBB_VOL_MIN = 1.5        # volume minimo per Super Best Buy / Super Best Buy 2
+SAR_FLIP_WINDOW = 3      # barre entro cui il flip SAR e' considerato "fresco" (ricalibrato da backtest, era 2)
+SBB_VOL_MIN = 1.2        # volume minimo per Super Best Buy / Super Best Buy 2 (ricalibrato da backtest, era 1.5)
+SBB_ER_MIN = 0.20        # nuovo filtro: efficiency ratio minimo (aggiunto in ricalibrazione)
 SANITY_PERFOGGI = 4.0    # cap |perf oggi %| per evitare ingressi dopo spike
+# Ricalibrazione 2026-07: backtest su 162.610 righe storiche (147 ETF) ha mostrato che la
+# formula originale (AO>0 e in miglioramento richiesti, bsf<=2, vol>=1.5) sottoperformava la
+# baseline (rendimento medio a 5gg: +0.12/+0.07% contro +0.28% di baseline). La versione qui
+# sotto (senza richiedere AO, con ER>=0.20 e finestra flip piu' ampia) batte la baseline sul
+# rendimento medio a 5gg (+0.37%/+0.39% contro +0.28%) e leggermente sul win-rate (+3% a 5gg:
+# 18.7% contro 17.9% baseline) — miglioramento reale ma modesto, non spettacolare.
 
 # Mappa suffisso ticker -> prefisso TradingView (standard richiesto)
 TV_SUFFIX_MAP = {
@@ -370,19 +377,20 @@ def compute_indicators(df: pd.DataFrame) -> dict | None:
     sell_stop = zona == "STOP"
     sell_exit = zona == "USCITA"
 
+    # Super Best Buy: ricalibrato da backtest (vedi nota sopra alle costanti).
+    # Rimosso il requisito AO>0/AO in miglioramento (peggiorava il risultato nel backtest),
+    # aggiunto filtro ER>=0.20, finestra flip allargata a 3 barre, volume abbassato a 1.2x.
     super_best_buy = (
         sar_bullish and bars_since_flip <= SAR_FLIP_WINDOW
-        and ao_v > 0 and ao_improving
         and volr >= SBB_VOL_MIN
+        and er_v >= SBB_ER_MIN
         and abs(perf_oggi) <= SANITY_PERFOGGI
     )
-    # Super Best Buy 2 (sperimentale, in parallelo): stessa base ma senza
-    # richiedere AO>0 — solo AO in miglioramento (raptor-leva style)
+    # Super Best Buy 2: variante "alta convinzione" — stessa base ma richiede anche
+    # zona in trend rialzista (LONG_CONF/LONG_EARLY). Meno segnali, rendimento medio
+    # leggermente migliore nel backtest, win-rate a +3% pero' non superiore alla baseline.
     super_best_buy_2 = (
-        sar_bullish and bars_since_flip <= SAR_FLIP_WINDOW
-        and ao_improving
-        and volr >= SBB_VOL_MIN
-        and abs(perf_oggi) <= SANITY_PERFOGGI
+        super_best_buy and zona in ("LONG_CONF", "LONG_EARLY")
     )
     best_buy = bool(buy3 or buy2)  # sezione Best Buy: segnali LONG_CONF/LONG_EARLY filtrati per qualita'
 
