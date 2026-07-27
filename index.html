@@ -71,6 +71,46 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 .rowbtn{background:none;border:1px solid var(--border2);color:var(--text3);padding:2px 6px;border-radius:3px;font-size:10px;cursor:pointer;margin-right:2px}
 .rowbtn:hover{border-color:var(--accent);color:var(--accent)}
 
+/* CARD SEGNALI (Best Buy / Super Best Buy / Super Best Buy 2) */
+.sig-section{padding:10px 20px 4px;border-bottom:1px solid var(--border)}
+.sig-title{font-family:var(--font-cond);font-size:13px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sig-title span{color:var(--text3);font-weight:400;font-size:10px;letter-spacing:.5px}
+.sig-cards{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:10px}
+.sig-empty{font-size:11px;color:var(--text3);font-family:var(--font-cond);padding:4px 0}
+.sig-card{border-radius:6px;padding:10px 12px;min-width:190px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;border:1px solid var(--border)}
+.sig-card:hover{transform:translateY(-1px)}
+.sig-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+.sig-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.sig-ticker{font-family:var(--font-mono);font-size:14px;font-weight:700}
+.sig-nome{font-size:9px;color:var(--text3);margin-bottom:6px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sig-settore{font-size:8px;color:var(--text3);font-family:var(--font-cond);letter-spacing:.5px}
+.sig-metrics{display:flex;gap:5px;flex-wrap:wrap;font-size:9px;font-family:var(--font-cond);font-weight:600}
+.sig-m{background:var(--bg2);padding:2px 5px;border-radius:3px;color:var(--text2)}
+.sig-date{font-size:8px;color:var(--text3);font-family:var(--font-mono);margin-top:5px;padding-top:4px;border-top:1px solid var(--bg3)}
+.sig-stato{font-size:8px;font-weight:700;font-family:var(--font-cond);padding:1px 5px;border-radius:3px}
+
+/* Best Buy — blu/verde */
+.bb-title{color:var(--accent)}
+.bb-card{background:var(--bg)}
+.bb-card::before{background:var(--accent)}
+.bb-ticker{color:var(--accent)}
+
+/* Super Best Buy — giallo/ambra */
+.sbb-title{color:#b8860b}
+.sbb-card{background:#fffbeb;border-color:#f59e0b}
+.sbb-card::before{background:#f59e0b}
+.sbb-ticker{color:#b8860b}
+.sbb-card .sig-m{background:#fff3cd;color:#7a5c00}
+
+/* Super Best Buy 2 — rosso */
+.sbb2-title{color:#c92a2a}
+.sbb2-card{background:#fff5f5;border-color:#e03131}
+.sbb2-card::before{background:#e03131}
+.sbb2-ticker{color:#c92a2a}
+.sbb2-card .sig-m{background:#ffe3e3;color:#862e2e}
+.sig-stato-aperto{background:#d3f9d8;color:var(--lc)}
+.sig-stato-chiuso{background:var(--bg3);color:var(--text3)}
+
 /* MODAL GRAFICO */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(33,37,41,.5);z-index:200;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto}
 .modal-bg.open{display:flex}
@@ -100,6 +140,19 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
   <div class="spacer"></div>
   <div class="meta" id="lastUpdate">—</div>
   <button class="btn primary" id="btnExcel">⬇ Excel</button>
+</div>
+
+<div class="sig-section">
+  <div class="sig-title bb-title">🎯 BEST BUY <span id="bb-subtitle">ultimi 6 giorni (oggi + 5 precedenti)</span></div>
+  <div class="sig-cards" id="bb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
+</div>
+<div class="sig-section">
+  <div class="sig-title sbb-title">🚀 SUPER BEST BUY <span id="sbb-subtitle">ultimi 6 giorni — flip SAR + AO&gt;0 in miglioramento</span></div>
+  <div class="sig-cards" id="sbb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
+</div>
+<div class="sig-section">
+  <div class="sig-title sbb2-title">🚀2 SUPER BEST BUY 2 <span id="sbb2-subtitle">sperimentale — ultimi 6 giorni, senza richiedere AO&gt;0</span></div>
+  <div class="sig-cards" id="sbb2-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 
 <div class="controls">
@@ -143,6 +196,7 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
       <th data-k="rsi14">RSI14</th>
       <th data-k="adx">ADX</th>
       <th data-k="score">Score</th>
+      <th data-k="ml_score">ML Score<span style="font-weight:400"> ⓘ</span></th>
       <th>Azioni</th>
     </tr>
   </thead>
@@ -190,6 +244,85 @@ async function load(){
   document.getElementById('lastUpdate').textContent = 'Aggiornato: ' + (json.generato||'').replace('T',' ').slice(0,16);
   populateSettori();
   render();
+  loadSignalCards();
+}
+
+const SIG_WINDOW_DAYS = 6; // oggi + 5 precedenti
+
+async function fetchLog(file){
+  try{
+    const r = await fetch(file + '?t=' + Date.now());
+    if(!r.ok) return [];
+    return await r.json();
+  }catch(e){ return []; }
+}
+
+function recentEntries(log){
+  const cutoff = Date.now() - SIG_WINDOW_DAYS*24*60*60*1000;
+  const byTicker = {};
+  for(const e of log){
+    const ts = new Date(e.flip_ts).getTime();
+    if(isNaN(ts) || ts < cutoff) continue;
+    if(!byTicker[e.ticker] || ts > new Date(byTicker[e.ticker].flip_ts).getTime()){
+      byTicker[e.ticker] = e;
+    }
+  }
+  return Object.values(byTicker).sort((a,b)=> new Date(b.flip_ts)-new Date(a.flip_ts));
+}
+
+function daysAgoLabel(iso){
+  const d = Math.floor((Date.now()-new Date(iso).getTime())/(24*60*60*1000));
+  if(d<=0) return 'oggi';
+  if(d===1) return 'ieri';
+  return d+'gg fa';
+}
+
+function signalCard(cls, e){
+  const rendPct = e.stato==='chiuso' ? e.rendimento_pct
+    : (e.ultimo_prezzo && e.prezzo_ingresso ? round2((e.ultimo_prezzo/e.prezzo_ingresso-1)*100) : null);
+  const rendColor = rendPct==null ? 'var(--text3)' : (rendPct>=0 ? 'var(--lc)' : 'var(--ex)');
+  const statoLabel = e.stato==='aperto' ? 'ATTIVO' : 'CHIUSO';
+  const statoCls = e.stato==='aperto' ? 'sig-stato-aperto' : 'sig-stato-chiuso';
+  return `<div class="sig-card ${cls}-card" onclick="openChart('${e.ticker}')" title="Apri grafico ${e.ticker}">
+    <div class="sig-card-top">
+      <div>
+        <div class="sig-ticker ${cls}-ticker">${e.ticker}</div>
+        <div class="sig-nome">${e.nome||''}</div>
+        <div class="sig-settore">${e.settore||''}</div>
+      </div>
+      <div class="sig-stato ${statoCls}">${statoLabel}</div>
+    </div>
+    <div class="sig-metrics">
+      <span class="sig-m">ingresso ${e.prezzo_ingresso?.toFixed(2)??'—'}</span>
+      <span class="sig-m" style="color:${rendColor}">${rendPct==null?'—':(rendPct>=0?'+':'')+rendPct+'%'}</span>
+    </div>
+    <div class="sig-date">segnale: ${daysAgoLabel(e.flip_ts)} · ${e.flip_ts_it||''}</div>
+  </div>`;
+}
+
+function round2(v){ return Math.round(v*100)/100; }
+
+function renderSignalCards(boxId, subId, entries, emptyMsg, cls){
+  const box = document.getElementById(boxId);
+  const sub = document.getElementById(subId);
+  if(!entries.length){
+    box.innerHTML = `<div class="sig-empty">${emptyMsg}</div>`;
+    sub.textContent = 'nessun candidato';
+    return;
+  }
+  sub.textContent = entries.length + ' negli ultimi ' + SIG_WINDOW_DAYS + ' giorni';
+  box.innerHTML = entries.map(e=>signalCard(cls, e)).join('');
+}
+
+async function loadSignalCards(){
+  const [bbLog, sbbLog, sbb2Log] = await Promise.all([
+    fetchLog('best_buy_log.json'),
+    fetchLog('sbb_flip_log.json'),
+    fetchLog('sbb2_flip_log.json'),
+  ]);
+  renderSignalCards('bb-cards', 'bb-subtitle', recentEntries(bbLog), 'Nessun Best Buy negli ultimi 6 giorni', 'bb');
+  renderSignalCards('sbb-cards', 'sbb-subtitle', recentEntries(sbbLog), 'Nessun Super Best Buy negli ultimi 6 giorni', 'sbb');
+  renderSignalCards('sbb2-cards', 'sbb2-subtitle', recentEntries(sbb2Log), 'Nessun Super Best Buy 2 negli ultimi 6 giorni', 'sbb2');
 }
 
 function populateSettori(){
@@ -239,6 +372,7 @@ function render(){
       <td class="num">${r.rsi14?.toFixed(1)}</td>
       <td class="num">${r.adx?.toFixed(1)}</td>
       <td class="score">${r.score?.toFixed(0)}</td>
+      <td class="num" title="${r.ml_score_date? 'calcolato il '+r.ml_score_date : 'modello non ancora disponibile'}">${r.ml_score==null?'—':(r.ml_score>=0?'+':'')+r.ml_score.toFixed(2)+'%'}</td>
       <td>
         <button class="rowbtn" onclick="openChart('${r.ticker}')" title="Grafico">📈</button>
         <button class="rowbtn" onclick="openRegole('${r.ticker}')" title="Regole PDF">📄</button>
@@ -367,7 +501,9 @@ document.getElementById('btnExcel').addEventListener('click', ()=>{
     'KAMA Fast':r.kama_fast, 'KAMA Slow':r.kama_slow, SAR:r.sar,
     'Best Buy':r.best_buy?'SI':'NO',
     'Super Best Buy':r.super_best_buy?'SI':'NO',
-    'Super Best Buy 2':r.super_best_buy_2?'SI':'NO'
+    'Super Best Buy 2':r.super_best_buy_2?'SI':'NO',
+    'ML Score (rend. atteso 10gg %)':r.ml_score,
+    'ML Score Data':r.ml_score_date
   }));
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
