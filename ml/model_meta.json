@@ -1,0 +1,32 @@
+{
+  "trained_at": "2026-07-27T12:56:14.681265",
+  "horizon_days": 10,
+  "rows_train": 129850,
+  "rows_test": 32627,
+  "test_period": [
+    "2025-08-14",
+    "2026-07-10"
+  ],
+  "mae_test": 4.5429,
+  "mae_baseline_test": 4.4305,
+  "r2_test": -0.0552,
+  "ic_test": 0.0076,
+  "features": [
+    "er",
+    "volume_ratio",
+    "baff",
+    "kama_gap_pct",
+    "ao",
+    "ao_improving",
+    "rsi14",
+    "sar_bullish",
+    "bars_since_flip",
+    "buy3",
+    "buy2",
+    "best_buy",
+    "super_best_buy",
+    "super_best_buy_2",
+    "perf_oggi",
+    "zona"
+  ]
+}
