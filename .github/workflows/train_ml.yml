@@ -28,10 +28,13 @@ jobs:
       - name: Allena il modello (walk-forward validation)
         run: python ml/train_model.py
 
-      - name: Commit e push del modello aggiornato
+      - name: Calcola il KPI storico dei segnali (win-rate)
+        run: python ml/compute_signal_kpi.py
+
+      - name: Commit e push del modello e del KPI aggiornati
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ml/model.joblib ml/model_meta.json
+          git add ml/model.joblib ml/model_meta.json signal_kpi.json
           git diff --staged --quiet || git commit -m "Riaddestramento ML settimanale $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
