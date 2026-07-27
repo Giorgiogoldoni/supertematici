@@ -1,0 +1,37 @@
+name: Riaddestra modello ML (settimanale)
+
+on:
+  schedule:
+    - cron: '0 7 * * 6'   # sabato mattina ~08:00-09:00 CET/CEST, dopo l'ultimo run feriale
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installa dipendenze
+        run: pip install -r ml/requirements-ml.txt
+
+      - name: Ricostruisci il dataset storico feature+label
+        run: python ml/build_training_data.py
+
+      - name: Allena il modello (walk-forward validation)
+        run: python ml/train_model.py
+
+      - name: Commit e push del modello aggiornato
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ml/model.joblib ml/model_meta.json
+          git diff --staged --quiet || git commit -m "Riaddestramento ML settimanale $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
