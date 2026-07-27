@@ -32,6 +32,51 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+# ── modello ML (opzionale, solo informativo) ────────────────────────────────
+ML_MODEL_FILE = Path(__file__).parent / "ml" / "model.joblib"
+ML_META_FILE = Path(__file__).parent / "ml" / "model_meta.json"
+_ml_bundle = None
+_ml_meta = None
+
+def load_ml_model():
+    global _ml_bundle, _ml_meta
+    if _ml_bundle is not None:
+        return _ml_bundle
+    try:
+        import joblib
+        _ml_bundle = joblib.load(ML_MODEL_FILE)
+        _ml_meta = json.loads(ML_META_FILE.read_text(encoding="utf-8")) if ML_META_FILE.exists() else {}
+    except Exception as e:
+        print(f"Modello ML non disponibile ({e}) — ml_score omesso", file=sys.stderr)
+        _ml_bundle = False
+    return _ml_bundle
+
+
+def predict_ml_score(row: dict):
+    """Ritorna (ml_score, ml_score_date) oppure (None, None) se il modello
+    non e' disponibile. Solo informativo: non influenza segnali/filtri."""
+    bundle = load_ml_model()
+    if not bundle:
+        return None, None
+    try:
+        feats_num = bundle["features_num"]
+        feat_cat = bundle["feature_cat"]
+        zona_cats = bundle["zona_categories"]
+        x = {}
+        for k in feats_num:
+            v = row.get(k)
+            x[k] = float(v) if isinstance(v, bool) else (float(v) if v is not None else np.nan)
+        zona_val = row.get(feat_cat)
+        X = pd.DataFrame([x])
+        X[feat_cat] = pd.Categorical([zona_val], categories=zona_cats)
+        pred = float(bundle["model"].predict(X)[0])
+        trained_at = (_ml_meta or {}).get("trained_at")
+        score_date = trained_at.split("T")[0] if trained_at else None
+        return round(pred, 2), score_date
+    except Exception as e:
+        print(f"Errore predizione ML per {row.get('ticker')}: {e}", file=sys.stderr)
+        return None, None
+
 ROOT = Path(__file__).parent
 DATA_DIR = ROOT / "data"
 CHARTS_DIR = DATA_DIR / "charts"
@@ -463,6 +508,84 @@ def build_regole_html(nome: str, ticker: str, ind: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Flip-log segnali (Best Buy / Super Best Buy / Super Best Buy 2)
+# ---------------------------------------------------------------------------
+# Log generico: apre una riga quando signal_field passa a True per un ticker,
+# aggiorna l'ultimo prezzo finché resta True, chiude quando torna False
+# registrando il rendimento%. Usato per popolare le card "sorti negli ultimi
+# N giorni" in index.html (a differenza dello stato live in supertematici.json,
+# che mostra solo il segnale di oggi).
+LOG_RETENTION_DAYS = 60  # righe chiuse più vecchie vengono scartate; le aperte restano sempre
+
+BEST_BUY_LOG_FILE = ROOT / "best_buy_log.json"
+SBB_LOG_FILE = ROOT / "sbb_flip_log.json"
+SBB2_LOG_FILE = ROOT / "sbb2_flip_log.json"
+
+
+def update_signal_log(results: list[dict], now: datetime.datetime, signal_field: str, log_path: Path):
+    try:
+        log = json.loads(log_path.read_text(encoding="utf-8"))
+    except Exception:
+        log = []
+
+    ts_iso = now.isoformat()
+    ts_it = now.strftime("%d/%m/%Y %H:%M")
+
+    open_idx = {e["ticker"]: i for i, e in enumerate(log) if e.get("stato") == "aperto"}
+
+    for r in results:
+        t = r["ticker"]
+        prezzo = r.get("prezzo")
+        attivo = bool(r.get(signal_field))
+
+        if attivo and t not in open_idx:
+            log.append({
+                "ticker": t,
+                "nome": r.get("nome", ""),
+                "settore": r.get("settore", ""),
+                "flip_ts": ts_iso,
+                "flip_ts_it": ts_it,
+                "zona_al_flip": r.get("zona"),
+                "score_al_flip": r.get("score"),
+                "prezzo_ingresso": prezzo,
+                "ultimo_prezzo": prezzo,
+                "ultimo_ts_it": ts_it,
+                "stato": "aperto",
+                "chiusura_ts_it": None,
+                "prezzo_chiusura": None,
+                "rendimento_pct": None,
+            })
+            open_idx[t] = len(log) - 1
+        elif t in open_idx:
+            e = log[open_idx[t]]
+            if not attivo:
+                e["stato"] = "chiuso"
+                e["chiusura_ts_it"] = ts_it
+                e["prezzo_chiusura"] = prezzo
+                if e.get("prezzo_ingresso"):
+                    e["rendimento_pct"] = round((prezzo / e["prezzo_ingresso"] - 1) * 100, 2)
+            else:
+                e["ultimo_prezzo"] = prezzo
+                e["ultimo_ts_it"] = ts_it
+
+    cutoff = now - datetime.timedelta(days=LOG_RETENTION_DAYS)
+    kept = []
+    for e in log:
+        if e.get("stato") == "chiuso":
+            try:
+                flip_dt = datetime.datetime.fromisoformat(e["flip_ts"])
+            except Exception:
+                flip_dt = now
+            if flip_dt < cutoff:
+                continue
+        kept.append(e)
+    log = kept
+
+    log_path.write_text(json.dumps(log, ensure_ascii=False), encoding="utf-8")
+    return log
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -516,6 +639,9 @@ def main():
 
             tv = tv_symbol(t, u["exchange"])
             row = {**u, "tv_symbol": tv, **summary}
+            ml_score, ml_score_date = predict_ml_score(row)
+            row["ml_score"] = ml_score
+            row["ml_score_date"] = ml_score_date
             results.append(row)
 
             chart_file = f"{t.replace('.', '_').replace('-', '_')}.json"
@@ -536,6 +662,11 @@ def main():
             "errori": errors,
             "titoli": results,
         }, ensure_ascii=False), encoding="utf-8")
+
+    now = datetime.datetime.now()
+    update_signal_log(results, now, "best_buy", BEST_BUY_LOG_FILE)
+    update_signal_log(results, now, "super_best_buy", SBB_LOG_FILE)
+    update_signal_log(results, now, "super_best_buy_2", SBB2_LOG_FILE)
 
     print(f"Completato: {len(results)} titoli ok, {len(errors)} errori")
     if errors:
