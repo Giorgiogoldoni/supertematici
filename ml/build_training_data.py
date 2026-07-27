@@ -40,8 +40,9 @@ JUMP_RATIO_LO = 0.4        # sotto questo rapporto -> discontinuita' sospetta
 # ── stessi parametri/soglie di fetch_supertematici.py ──────────────────────
 ER_N = 10
 VOL_AVG_N = 20
-SAR_FLIP_WINDOW = 2
-SBB_VOL_MIN = 1.5
+SAR_FLIP_WINDOW = 3
+SBB_VOL_MIN = 1.2
+SBB_ER_MIN = 0.20
 SANITY_PERFOGGI = 4.0
 
 
@@ -133,10 +134,9 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
     buy2 = (zona.eq("LONG_EARLY") & (df["ao"] > 0) & (volr >= 1.5) & (baff >= 3) & (er >= 0.35))
     best_buy = buy3 | buy2
 
-    super_best_buy = (sar_bullish & (bars_since_flip <= SAR_FLIP_WINDOW) & (df["ao"] > 0)
-                       & ao_improving & (volr >= SBB_VOL_MIN) & (perf_oggi.abs() <= SANITY_PERFOGGI))
-    super_best_buy_2 = (sar_bullish & (bars_since_flip <= SAR_FLIP_WINDOW)
-                         & ao_improving & (volr >= SBB_VOL_MIN) & (perf_oggi.abs() <= SANITY_PERFOGGI))
+    super_best_buy = (sar_bullish & (bars_since_flip <= SAR_FLIP_WINDOW) & (volr >= SBB_VOL_MIN)
+                       & (er >= SBB_ER_MIN) & (perf_oggi.abs() <= SANITY_PERFOGGI))
+    super_best_buy_2 = super_best_buy & zona.isin(["LONG_CONF", "LONG_EARLY"])
 
     out = pd.DataFrame({
         "ticker": ticker,
