@@ -75,6 +75,10 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 .sig-section{padding:10px 20px 4px;border-bottom:1px solid var(--border)}
 .sig-title{font-family:var(--font-cond);font-size:13px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .sig-title span{color:var(--text3);font-weight:400;font-size:10px;letter-spacing:.5px}
+.sig-kpi{font-size:10px;font-family:var(--font-mono);color:var(--text2);margin-bottom:8px}
+.sig-kpi b{font-weight:700}
+.sig-kpi .up{color:var(--lc)}
+.sig-kpi .down{color:var(--ex)}
 .sig-cards{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:10px}
 .sig-empty{font-size:11px;color:var(--text3);font-family:var(--font-cond);padding:4px 0}
 .sig-card{border-radius:6px;padding:10px 12px;min-width:190px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;border:1px solid var(--border)}
@@ -144,14 +148,17 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 
 <div class="sig-section">
   <div class="sig-title bb-title">🎯 BEST BUY <span id="bb-subtitle">ultimi 6 giorni (oggi + 5 precedenti)</span></div>
+  <div class="sig-kpi" id="bb-kpi"></div>
   <div class="sig-cards" id="bb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 <div class="sig-section">
-  <div class="sig-title sbb-title">🚀 SUPER BEST BUY <span id="sbb-subtitle">ultimi 6 giorni — flip SAR + AO&gt;0 in miglioramento</span></div>
+  <div class="sig-title sbb-title">🚀 SUPER BEST BUY <span id="sbb-subtitle">ultimi 6 giorni — flip SAR (≤3gg) + volume ≥1.2x + ER≥0.20</span></div>
+  <div class="sig-kpi" id="sbb-kpi"></div>
   <div class="sig-cards" id="sbb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 <div class="sig-section">
-  <div class="sig-title sbb2-title">🚀2 SUPER BEST BUY 2 <span id="sbb2-subtitle">sperimentale — ultimi 6 giorni, senza richiedere AO&gt;0</span></div>
+  <div class="sig-title sbb2-title">🚀2 SUPER BEST BUY 2 <span id="sbb2-subtitle">alta convinzione — come sopra + zona in trend rialzista</span></div>
+  <div class="sig-kpi" id="sbb2-kpi"></div>
   <div class="sig-cards" id="sbb2-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 
@@ -314,15 +321,29 @@ function renderSignalCards(boxId, subId, entries, emptyMsg, cls){
   box.innerHTML = entries.map(e=>signalCard(cls, e)).join('');
 }
 
+function kpiLine(elId, stats, baseline){
+  const el = document.getElementById(elId);
+  if(!stats || stats.n===0){ el.textContent = 'KPI storico non ancora disponibile'; return; }
+  const cls = stats.mean_return_pct >= baseline.mean_return_pct ? 'up' : 'down';
+  el.innerHTML = `Storico (orizzonte 5gg, target ≥+3%): <b>${stats.n}</b> eventi · win-rate <b class="${cls}">${stats.win_rate_pct}%</b> `+
+    `(baseline ${baseline.win_rate_pct}%) · rendimento medio <b class="${cls}">${stats.mean_return_pct>=0?'+':''}${stats.mean_return_pct}%</b> (baseline ${baseline.mean_return_pct>=0?'+':''}${baseline.mean_return_pct}%)`;
+}
+
 async function loadSignalCards(){
-  const [bbLog, sbbLog, sbb2Log] = await Promise.all([
+  const [bbLog, sbbLog, sbb2Log, kpi] = await Promise.all([
     fetchLog('best_buy_log.json'),
     fetchLog('sbb_flip_log.json'),
     fetchLog('sbb2_flip_log.json'),
+    fetchLog('signal_kpi.json'),
   ]);
   renderSignalCards('bb-cards', 'bb-subtitle', recentEntries(bbLog), 'Nessun Best Buy negli ultimi 6 giorni', 'bb');
   renderSignalCards('sbb-cards', 'sbb-subtitle', recentEntries(sbbLog), 'Nessun Super Best Buy negli ultimi 6 giorni', 'sbb');
   renderSignalCards('sbb2-cards', 'sbb2-subtitle', recentEntries(sbb2Log), 'Nessun Super Best Buy 2 negli ultimi 6 giorni', 'sbb2');
+  if(kpi && kpi.segnali){
+    kpiLine('bb-kpi', kpi.segnali.best_buy, kpi.baseline);
+    kpiLine('sbb-kpi', kpi.segnali.super_best_buy, kpi.baseline);
+    kpiLine('sbb2-kpi', kpi.segnali.super_best_buy_2, kpi.baseline);
+  }
 }
 
 function populateSettori(){
