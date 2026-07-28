@@ -371,9 +371,14 @@ def compute_indicators(df: pd.DataFrame) -> dict | None:
         elif prev5 >= prev14 and rsi5_v < rsi14_v:
             rsi_cross = -1
 
-    buy3 = (zona == "LONG_CONF" and ao_v > 0 and volr >= 2.0 and baff >= 3
-            and er_v >= 0.35 and gap_pct >= 0.3 and sar_bullish)
-    buy2 = (zona == "LONG_EARLY" and ao_v > 0 and volr >= 1.5 and baff >= 3 and er_v >= 0.35)
+    # Best Buy: ricalibrato da backtest (162.610 righe storiche, 147 ETF, orizzonte 5gg).
+    # Tolti i requisiti baff>=3 e AO>0 (non miglioravano il risultato), volume ed ER
+    # abbassati a 1.3x/0.20 — formula originale (volr>=2.0/1.5, ER>=0.35, baff>=3)
+    # aveva win-rate/rendimento medio sostanzialmente pari alla baseline. Risultato
+    # con la nuova formula: win-rate ~pari alla baseline, rendimento medio +43% relativo
+    # (+0.40% contro +0.28% baseline a 5gg) — miglioramento reale ma modesto.
+    buy3 = (zona == "LONG_CONF" and volr >= 1.3 and er_v >= 0.20 and sar_bullish)
+    buy2 = (zona == "LONG_EARLY" and volr >= 1.3 and er_v >= 0.20 and sar_bullish)
     sell_stop = zona == "STOP"
     sell_exit = zona == "USCITA"
 
@@ -445,6 +450,7 @@ def compute_indicators(df: pd.DataFrame) -> dict | None:
         "rsi5": round(rsi5_v, 1),
         "rsi14": round(rsi14_v, 1),
         "rsi_cross": rsi_cross,
+        "pre_signal": bool(rsi_cross == 1),  # PRE-SIGNAL: cross RSI5>RSI14 rialzista (anticipa Best Buy, vedi backtest)
         "adx": round(adx_val, 1),
         "volume_ratio": round(volr, 2),
         "baff": baff,
@@ -527,6 +533,7 @@ def build_regole_html(nome: str, ticker: str, ind: dict) -> str:
 LOG_RETENTION_DAYS = 60  # righe chiuse più vecchie vengono scartate; le aperte restano sempre
 
 BEST_BUY_LOG_FILE = ROOT / "best_buy_log.json"
+PRE_SIGNAL_LOG_FILE = ROOT / "pre_signal_log.json"
 SBB_LOG_FILE = ROOT / "sbb_flip_log.json"
 SBB2_LOG_FILE = ROOT / "sbb2_flip_log.json"
 
@@ -674,6 +681,7 @@ def main():
 
     now = datetime.datetime.now()
     update_signal_log(results, now, "best_buy", BEST_BUY_LOG_FILE)
+    update_signal_log(results, now, "pre_signal", PRE_SIGNAL_LOG_FILE)
     update_signal_log(results, now, "super_best_buy", SBB_LOG_FILE)
     update_signal_log(results, now, "super_best_buy_2", SBB2_LOG_FILE)
 
