@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add supertematici.json data/ regole/ best_buy_log.json sbb_flip_log.json sbb2_flip_log.json
+          git add supertematici.json data/ regole/ best_buy_log.json sbb_flip_log.json sbb2_flip_log.json pre_signal_log.json
           git diff --staged --quiet || git commit -m "Aggiornamento dati automatico $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
