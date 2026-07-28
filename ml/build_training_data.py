@@ -163,6 +163,7 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
         "kama_gap_pct": gap_pct, "ao": df["ao"], "ao_improving": ao_improving.astype(float),
         "rsi14": df["rsi14"], "rsi5": df["rsi5"],
         "rsi_cross_bull": rsi_cross_bull.astype(float), "rsi_cross_bear": rsi_cross_bear.astype(float),
+        "pre_signal": rsi_cross_bull.astype(float),
         "sar_bullish": sar_bullish.astype(float),
         "bars_since_flip": bars_since_flip, "zona": zona,
         "buy3": buy3.astype(float), "buy2": buy2.astype(float), "best_buy": best_buy.astype(float),
