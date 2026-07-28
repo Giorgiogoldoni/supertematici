@@ -480,6 +480,7 @@ def compute_indicators(df: pd.DataFrame) -> dict | None:
         "sar": [round(float(v), 4) for v in sar],
         "sar_trend": [int(v) for v in sar_trend],
         "ao": [round(float(v), 4) for v in ao],
+        "rsi5": [round(float(v), 2) for v in rsi5],
         "rsi14": [round(float(v), 2) for v in rsi14],
     }
 
