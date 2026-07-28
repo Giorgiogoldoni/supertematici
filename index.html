@@ -74,11 +74,21 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 .rangebtn{background:var(--bg2);border:1px solid var(--border2);color:var(--text3);padding:2px 8px;border-radius:3px;font-size:9px;font-family:var(--font-cond);font-weight:700;cursor:pointer}
 .rangebtn:hover{border-color:var(--accent);color:var(--accent)}
 .rangebtn.act{background:var(--accent);border-color:var(--accent);color:#fff}
+.storico-table{width:100%;border-collapse:collapse;font-size:11px}
+.storico-table th{text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--text3);font-family:var(--font-cond);font-size:9px;letter-spacing:.5px}
+.storico-table td{padding:5px 8px;border-bottom:1px solid var(--bg3)}
+.storico-table tr:hover{background:var(--bg2)}
+.storico-table .ticker{font-family:var(--font-mono);font-weight:700;color:var(--accent)}
 
 /* CARD SEGNALI (Best Buy / Super Best Buy / Super Best Buy 2) */
 .sig-section{padding:10px 20px 4px;border-bottom:1px solid var(--border)}
-.sig-title{font-family:var(--font-cond);font-size:13px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.sig-title span{color:var(--text3);font-weight:400;font-size:10px;letter-spacing:.5px}
+.sig-title{font-family:var(--font-cond);font-size:13px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;justify-content:space-between}
+.sig-title span{color:var(--text3);font-weight:400;font-size:10px;letter-spacing:.5px;margin-right:auto}
+.ps-title{color:#7048e8}
+.ps-card{background:#f3f0ff;border-color:#7048e8}
+.ps-card::before{background:#7048e8}
+.ps-ticker{color:#7048e8}
+.ps-card .sig-m{background:#e5dbff;color:#5f3dc4}
 .sig-kpi{font-size:10px;font-family:var(--font-mono);color:var(--text2);margin-bottom:8px}
 .sig-kpi b{font-weight:700}
 .sig-kpi .up{color:var(--lc)}
@@ -151,17 +161,26 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 </div>
 
 <div class="sig-section">
-  <div class="sig-title bb-title">🎯 BEST BUY <span id="bb-subtitle">ultimi 6 giorni (oggi + 5 precedenti)</span></div>
+  <div class="sig-title ps-title">⚡ PRE-SIGNAL <span id="ps-subtitle">ultimi 3 giorni — cross RSI5&gt;RSI14 (anticipa Best Buy nell'85% dei casi entro 10gg)</span>
+    <button class="rowbtn" onclick="openStorico('pre_signal')">📜 Storico</button></div>
+  <div class="sig-kpi" id="ps-kpi"></div>
+  <div class="sig-cards" id="ps-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
+</div>
+<div class="sig-section">
+  <div class="sig-title bb-title">🎯 BEST BUY <span id="bb-subtitle">ultimi 6 giorni (oggi + 5 precedenti)</span>
+    <button class="rowbtn" onclick="openStorico('best_buy')">📜 Storico</button></div>
   <div class="sig-kpi" id="bb-kpi"></div>
   <div class="sig-cards" id="bb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 <div class="sig-section">
-  <div class="sig-title sbb-title">🚀 SUPER BEST BUY <span id="sbb-subtitle">ultimi 6 giorni — flip SAR (≤3gg) + volume ≥1.2x + ER≥0.20</span></div>
+  <div class="sig-title sbb-title">🚀 SUPER BEST BUY <span id="sbb-subtitle">ultimi 6 giorni — flip SAR (≤3gg) + volume ≥1.2x + ER≥0.20</span>
+    <button class="rowbtn" onclick="openStorico('super_best_buy')">📜 Storico</button></div>
   <div class="sig-kpi" id="sbb-kpi"></div>
   <div class="sig-cards" id="sbb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
 <div class="sig-section">
-  <div class="sig-title sbb2-title">🚀2 SUPER BEST BUY 2 <span id="sbb2-subtitle">alta convinzione — come sopra + zona in trend rialzista</span></div>
+  <div class="sig-title sbb2-title">🚀2 SUPER BEST BUY 2 <span id="sbb2-subtitle">alta convinzione — come sopra + zona in trend rialzista</span>
+    <button class="rowbtn" onclick="openStorico('super_best_buy_2')">📜 Storico</button></div>
   <div class="sig-kpi" id="sbb2-kpi"></div>
   <div class="sig-cards" id="sbb2-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
 </div>
@@ -258,7 +277,10 @@ async function load(){
   loadSignalCards();
 }
 
-const SIG_WINDOW_DAYS = 6; // oggi + 5 precedenti
+const SIG_WINDOW_DAYS = 6; // oggi + 5 precedenti (default per Best Buy / Super Best Buy / Super Best Buy 2)
+const PS_WINDOW_DAYS = 3;  // finestra piu' stretta per PRE-SIGNAL
+
+const ALL_LOGS = {}; // cache dei log completi, usata anche dal modale Storico
 
 async function fetchLog(file){
   try{
@@ -268,8 +290,8 @@ async function fetchLog(file){
   }catch(e){ return []; }
 }
 
-function recentEntries(log){
-  const cutoff = Date.now() - SIG_WINDOW_DAYS*24*60*60*1000;
+function recentEntries(log, windowDays){
+  const cutoff = Date.now() - windowDays*24*60*60*1000;
   const byTicker = {};
   for(const e of log){
     const ts = new Date(e.flip_ts).getTime();
@@ -313,7 +335,7 @@ function signalCard(cls, e){
 
 function round2(v){ return Math.round(v*100)/100; }
 
-function renderSignalCards(boxId, subId, entries, emptyMsg, cls){
+function renderSignalCards(boxId, subId, entries, emptyMsg, cls, windowDays){
   const box = document.getElementById(boxId);
   const sub = document.getElementById(subId);
   if(!entries.length){
@@ -321,7 +343,7 @@ function renderSignalCards(boxId, subId, entries, emptyMsg, cls){
     sub.textContent = 'nessun candidato';
     return;
   }
-  sub.textContent = entries.length + ' negli ultimi ' + SIG_WINDOW_DAYS + ' giorni';
+  sub.textContent = entries.length + ' negli ultimi ' + windowDays + ' giorni';
   box.innerHTML = entries.map(e=>signalCard(cls, e)).join('');
 }
 
@@ -333,17 +355,56 @@ function kpiLine(elId, stats, baseline){
     `(baseline ${baseline.win_rate_pct}%) · rendimento medio <b class="${cls}">${stats.mean_return_pct>=0?'+':''}${stats.mean_return_pct}%</b> (baseline ${baseline.mean_return_pct>=0?'+':''}${baseline.mean_return_pct}%)`;
 }
 
+const STORICO_META = {
+  pre_signal: {file:'pre_signal_log.json', label:'PRE-SIGNAL'},
+  best_buy: {file:'best_buy_log.json', label:'BEST BUY'},
+  super_best_buy: {file:'sbb_flip_log.json', label:'SUPER BEST BUY'},
+  super_best_buy_2: {file:'sbb2_flip_log.json', label:'SUPER BEST BUY 2'},
+};
+
+function openStorico(key){
+  const meta = STORICO_META[key];
+  const log = (ALL_LOGS[meta.file] || []).slice().sort((a,b)=> new Date(b.flip_ts)-new Date(a.flip_ts));
+  const rows = log.map(e=>{
+    const rendPct = e.stato==='chiuso' ? e.rendimento_pct
+      : (e.ultimo_prezzo && e.prezzo_ingresso ? round2((e.ultimo_prezzo/e.prezzo_ingresso-1)*100) : null);
+    const rendColor = rendPct==null ? 'var(--text3)' : (rendPct>=0 ? 'var(--lc)' : 'var(--ex)');
+    return `<tr onclick="closeModal();openChart('${e.ticker}')" style="cursor:pointer">
+      <td class="ticker">${e.ticker}</td><td class="nome">${e.nome||''}</td><td>${e.settore||''}</td>
+      <td>${e.stato==='aperto'?'ATTIVO':'CHIUSO'}</td>
+      <td class="num">${e.flip_ts_it||''}</td>
+      <td class="num">${e.chiusura_ts_it||'—'}</td>
+      <td class="num" style="color:${rendColor}">${rendPct==null?'—':(rendPct>=0?'+':'')+rendPct+'%'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header"><h2>📜 Storico ${meta.label} <span style="color:var(--text3);font-family:var(--font-mono);font-size:12px">${log.length} eventi (ultimi ${LOG_RETENTION_DAYS_DISPLAY}gg)</span></h2></div>
+    <table class="storico-table"><thead><tr>
+      <th>Ticker</th><th>Nome</th><th>Settore</th><th>Stato</th><th>Segnale</th><th>Chiusura</th><th>Rendimento</th>
+    </tr></thead><tbody>${rows || '<tr><td colspan="7" class="sig-empty">Nessun evento storico</td></tr>'}</tbody></table>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+const LOG_RETENTION_DAYS_DISPLAY = 60;
+
 async function loadSignalCards(){
-  const [bbLog, sbbLog, sbb2Log, kpi] = await Promise.all([
+  const [psLog, bbLog, sbbLog, sbb2Log, kpi] = await Promise.all([
+    fetchLog('pre_signal_log.json'),
     fetchLog('best_buy_log.json'),
     fetchLog('sbb_flip_log.json'),
     fetchLog('sbb2_flip_log.json'),
     fetchLog('signal_kpi.json'),
   ]);
-  renderSignalCards('bb-cards', 'bb-subtitle', recentEntries(bbLog), 'Nessun Best Buy negli ultimi 6 giorni', 'bb');
-  renderSignalCards('sbb-cards', 'sbb-subtitle', recentEntries(sbbLog), 'Nessun Super Best Buy negli ultimi 6 giorni', 'sbb');
-  renderSignalCards('sbb2-cards', 'sbb2-subtitle', recentEntries(sbb2Log), 'Nessun Super Best Buy 2 negli ultimi 6 giorni', 'sbb2');
+  ALL_LOGS['pre_signal_log.json'] = psLog;
+  ALL_LOGS['best_buy_log.json'] = bbLog;
+  ALL_LOGS['sbb_flip_log.json'] = sbbLog;
+  ALL_LOGS['sbb2_flip_log.json'] = sbb2Log;
+  renderSignalCards('ps-cards', 'ps-subtitle', recentEntries(psLog, PS_WINDOW_DAYS), 'Nessun cross RSI recente', 'ps', PS_WINDOW_DAYS);
+  renderSignalCards('bb-cards', 'bb-subtitle', recentEntries(bbLog, SIG_WINDOW_DAYS), 'Nessun Best Buy negli ultimi 6 giorni', 'bb', SIG_WINDOW_DAYS);
+  renderSignalCards('sbb-cards', 'sbb-subtitle', recentEntries(sbbLog, SIG_WINDOW_DAYS), 'Nessun Super Best Buy negli ultimi 6 giorni', 'sbb', SIG_WINDOW_DAYS);
+  renderSignalCards('sbb2-cards', 'sbb2-subtitle', recentEntries(sbb2Log, SIG_WINDOW_DAYS), 'Nessun Super Best Buy 2 negli ultimi 6 giorni', 'sbb2', SIG_WINDOW_DAYS);
   if(kpi && kpi.segnali){
+    kpiLine('ps-kpi', kpi.segnali.pre_signal, kpi.baseline);
     kpiLine('bb-kpi', kpi.segnali.best_buy, kpi.baseline);
     kpiLine('sbb-kpi', kpi.segnali.super_best_buy, kpi.baseline);
     kpiLine('sbb2-kpi', kpi.segnali.super_best_buy_2, kpi.baseline);
