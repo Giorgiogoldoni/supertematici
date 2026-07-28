@@ -1,16 +1,16 @@
 {
-  "trained_at": "2026-07-27T20:32:04.929638",
+  "trained_at": "2026-07-28T05:01:58.314510",
   "horizon_days": 10,
   "rows_train": 129989,
-  "rows_test": 32621,
+  "rows_test": 32635,
   "test_period": [
     "2025-08-18",
     "2026-07-13"
   ],
-  "mae_test": 4.5408,
-  "mae_baseline_test": 4.4335,
-  "r2_test": -0.0532,
-  "ic_test": 0.0086,
+  "mae_test": 4.5484,
+  "mae_baseline_test": 4.4326,
+  "r2_test": -0.0565,
+  "ic_test": 0.0081,
   "features": [
     "er",
     "volume_ratio",
