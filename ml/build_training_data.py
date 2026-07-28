@@ -53,6 +53,19 @@ def efficiency_ratio(close: pd.Series, n: int) -> pd.Series:
     return er.fillna(0)
 
 
+def rsi(close: pd.Series, n: int) -> pd.Series:
+    """Stessa formula di fetch_supertematici.py — usata per ricalcolare RSI5
+    quando i chart json storici non lo contengono ancora (retrocompatibilita')."""
+    delta = close.diff()
+    gain = delta.clip(lower=0)
+    loss = -delta.clip(upper=0)
+    avg_gain = gain.ewm(alpha=1 / n, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1 / n, adjust=False).mean()
+    rs = avg_gain / avg_loss.replace(0, np.nan)
+    out = 100 - (100 / (1 + rs))
+    return out.fillna(50)
+
+
 def vol_ratio_series(vol: pd.Series) -> pd.Series:
     vol_avg = vol.rolling(VOL_AVG_N).mean()
     return (vol / vol_avg.replace(0, np.nan)).fillna(0)
@@ -107,6 +120,7 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
     }).set_index("date")
 
     close = df["close"]
+    df["rsi5"] = pd.Series(chart["rsi5"], index=df.index) if "rsi5" in chart else rsi(close, 5)
 
     # ── sanita' dati: rapporto giorno/giorno anomalo -> possibile rebase/split ─
     ratio = close / close.shift(1)
@@ -125,13 +139,17 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
     ao_improving = ao_improving_series(df["ao"])
     perf_oggi = close.pct_change() * 100
 
+    # ── cross RSI5/RSI14 (stessa definizione del segnale rsi_cross in produzione) ──
+    r5, r14 = df["rsi5"], df["rsi14"]
+    rsi_cross_bull = (r5.shift(1) <= r14.shift(1)) & (r5 > r14)
+    rsi_cross_bear = (r5.shift(1) >= r14.shift(1)) & (r5 < r14)
+
     zona = zona_series(close, df["kama_fast"], df["kama_slow"])
     ks = df["kama_slow"]
     gap_pct = ((df["kama_fast"] - ks) / ks.replace(0, np.nan) * 100).fillna(0)
 
-    buy3 = (zona.eq("LONG_CONF") & (df["ao"] > 0) & (volr >= 2.0) & (baff >= 3)
-            & (er >= 0.35) & (gap_pct >= 0.3) & sar_bullish)
-    buy2 = (zona.eq("LONG_EARLY") & (df["ao"] > 0) & (volr >= 1.5) & (baff >= 3) & (er >= 0.35))
+    buy3 = zona.eq("LONG_CONF") & (volr >= 1.3) & (er >= 0.20) & sar_bullish
+    buy2 = zona.eq("LONG_EARLY") & (volr >= 1.3) & (er >= 0.20) & sar_bullish
     best_buy = buy3 | buy2
 
     super_best_buy = (sar_bullish & (bars_since_flip <= SAR_FLIP_WINDOW) & (volr >= SBB_VOL_MIN)
@@ -143,7 +161,9 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
         "prezzo": close,
         "er": er, "volume_ratio": volr, "baff": baff,
         "kama_gap_pct": gap_pct, "ao": df["ao"], "ao_improving": ao_improving.astype(float),
-        "rsi14": df["rsi14"], "sar_bullish": sar_bullish.astype(float),
+        "rsi14": df["rsi14"], "rsi5": df["rsi5"],
+        "rsi_cross_bull": rsi_cross_bull.astype(float), "rsi_cross_bear": rsi_cross_bear.astype(float),
+        "sar_bullish": sar_bullish.astype(float),
         "bars_since_flip": bars_since_flip, "zona": zona,
         "buy3": buy3.astype(float), "buy2": buy2.astype(float), "best_buy": best_buy.astype(float),
         "super_best_buy": super_best_buy.astype(float), "super_best_buy_2": super_best_buy_2.astype(float),
