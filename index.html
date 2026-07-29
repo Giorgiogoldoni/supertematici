@@ -89,6 +89,13 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
 .ps-card::before{background:#7048e8}
 .ps-ticker{color:#7048e8}
 .ps-card .sig-m{background:#e5dbff;color:#5f3dc4}
+
+/* RIMBALZO — teal/ciano */
+.rb-title{color:#0c8599}
+.rb-card{background:#e3fafc;border-color:#0c8599}
+.rb-card::before{background:#0c8599}
+.rb-ticker{color:#0c8599}
+.rb-card .sig-m{background:#c5f6fa;color:#0b7285}
 .sig-kpi{font-size:10px;font-family:var(--font-mono);color:var(--text2);margin-bottom:8px}
 .sig-kpi b{font-weight:700}
 .sig-kpi .up{color:var(--lc)}
@@ -160,6 +167,13 @@ td.score{font-family:var(--font-mono);font-size:12px;font-weight:700;text-align:
   <button class="btn primary" id="btnExcel">⬇ Excel</button>
 </div>
 
+<div class="sig-section">
+  <div class="sig-section">
+  <div class="sig-title rb-title">🔄 RIMBALZO <span id="rb-subtitle">ultimi 3 giorni — RSI14&lt;30 in risalita dentro zona STOP (segnale più forte della suite)</span>
+    <button class="rowbtn" onclick="openStorico('rimbalzo')">📜 Storico</button></div>
+  <div class="sig-kpi" id="rb-kpi"></div>
+  <div class="sig-cards" id="rb-cards"><div class="sig-empty">⏳ Caricamento...</div></div>
+</div>
 <div class="sig-section">
   <div class="sig-title ps-title">⚡ PRE-SIGNAL <span id="ps-subtitle">ultimi 3 giorni — cross RSI5&gt;RSI14 (anticipa Best Buy nell'85% dei casi entro 10gg)</span>
     <button class="rowbtn" onclick="openStorico('pre_signal')">📜 Storico</button></div>
@@ -279,6 +293,7 @@ async function load(){
 
 const SIG_WINDOW_DAYS = 6; // oggi + 5 precedenti (default per Best Buy / Super Best Buy / Super Best Buy 2)
 const PS_WINDOW_DAYS = 3;  // finestra piu' stretta per PRE-SIGNAL
+const RB_WINDOW_DAYS = 3;  // finestra piu' stretta per RIMBALZO (segnale di timing puntuale)
 
 const ALL_LOGS = {}; // cache dei log completi, usata anche dal modale Storico
 
@@ -356,6 +371,7 @@ function kpiLine(elId, stats, baseline){
 }
 
 const STORICO_META = {
+  rimbalzo: {file:'rimbalzo_log.json', label:'RIMBALZO'},
   pre_signal: {file:'pre_signal_log.json', label:'PRE-SIGNAL'},
   best_buy: {file:'best_buy_log.json', label:'BEST BUY'},
   super_best_buy: {file:'sbb_flip_log.json', label:'SUPER BEST BUY'},
@@ -388,22 +404,26 @@ function closeModal(){ document.getElementById('modalBg').classList.remove('open
 const LOG_RETENTION_DAYS_DISPLAY = 60;
 
 async function loadSignalCards(){
-  const [psLog, bbLog, sbbLog, sbb2Log, kpi] = await Promise.all([
+  const [rbLog, psLog, bbLog, sbbLog, sbb2Log, kpi] = await Promise.all([
+    fetchLog('rimbalzo_log.json'),
     fetchLog('pre_signal_log.json'),
     fetchLog('best_buy_log.json'),
     fetchLog('sbb_flip_log.json'),
     fetchLog('sbb2_flip_log.json'),
     fetchLog('signal_kpi.json'),
   ]);
+  ALL_LOGS['rimbalzo_log.json'] = rbLog;
   ALL_LOGS['pre_signal_log.json'] = psLog;
   ALL_LOGS['best_buy_log.json'] = bbLog;
   ALL_LOGS['sbb_flip_log.json'] = sbbLog;
   ALL_LOGS['sbb2_flip_log.json'] = sbb2Log;
+  renderSignalCards('rb-cards', 'rb-subtitle', recentEntries(rbLog, RB_WINDOW_DAYS), 'Nessun rimbalzo intercettato negli ultimi 3 giorni', 'rb', RB_WINDOW_DAYS);
   renderSignalCards('ps-cards', 'ps-subtitle', recentEntries(psLog, PS_WINDOW_DAYS), 'Nessun cross RSI recente', 'ps', PS_WINDOW_DAYS);
   renderSignalCards('bb-cards', 'bb-subtitle', recentEntries(bbLog, SIG_WINDOW_DAYS), 'Nessun Best Buy negli ultimi 6 giorni', 'bb', SIG_WINDOW_DAYS);
   renderSignalCards('sbb-cards', 'sbb-subtitle', recentEntries(sbbLog, SIG_WINDOW_DAYS), 'Nessun Super Best Buy negli ultimi 6 giorni', 'sbb', SIG_WINDOW_DAYS);
   renderSignalCards('sbb2-cards', 'sbb2-subtitle', recentEntries(sbb2Log, SIG_WINDOW_DAYS), 'Nessun Super Best Buy 2 negli ultimi 6 giorni', 'sbb2', SIG_WINDOW_DAYS);
   if(kpi && kpi.segnali){
+    kpiLine('rb-kpi', kpi.segnali.rimbalzo, kpi.baseline);
     kpiLine('ps-kpi', kpi.segnali.pre_signal, kpi.baseline);
     kpiLine('bb-kpi', kpi.segnali.best_buy, kpi.baseline);
     kpiLine('sbb-kpi', kpi.segnali.super_best_buy, kpi.baseline);
