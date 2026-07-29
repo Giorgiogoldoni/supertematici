@@ -31,6 +31,8 @@ HORIZON_DAYS = 5     # orizzonte fisso di valutazione (giorni di mercato)
 SUCCESS_TARGET = 3.0  # rendimento %, soglia di "successo"
 
 SIGNALS = {
+    "rimbalzo": "Rimbalzo",
+    "pre_signal": "Pre-Signal",
     "best_buy": "Best Buy",
     "super_best_buy": "Super Best Buy",
     "super_best_buy_2": "Super Best Buy 2",
