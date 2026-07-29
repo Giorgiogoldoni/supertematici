@@ -164,6 +164,7 @@ def build_ticker_frame(ticker: str, chart: dict) -> pd.DataFrame | None:
         "rsi14": df["rsi14"], "rsi5": df["rsi5"],
         "rsi_cross_bull": rsi_cross_bull.astype(float), "rsi_cross_bear": rsi_cross_bear.astype(float),
         "pre_signal": rsi_cross_bull.astype(float),
+        "rimbalzo": (zona.eq("STOP") & (df["rsi14"] < 30.0) & (df["rsi14"] > df["rsi14"].shift(1))).astype(float),
         "sar_bullish": sar_bullish.astype(float),
         "bars_since_flip": bars_since_flip, "zona": zona,
         "buy3": buy3.astype(float), "buy2": buy2.astype(float), "best_buy": best_buy.astype(float),
