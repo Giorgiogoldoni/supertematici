@@ -1,39 +1,57 @@
 {
-  "generato": "2026-07-28T05:01:59.095608",
+  "generato": "2026-07-29T06:57:38.507176",
   "horizon_days": 5,
   "success_target_pct": 3.0,
   "baseline": {
-    "n": 163359,
+    "n": 163505,
     "win_rate_pct": 17.9,
-    "mean_return_pct": 0.28
+    "mean_return_pct": 0.278
   },
   "segnali": {
+    "rimbalzo": {
+      "label": "Rimbalzo",
+      "n": 956,
+      "win_rate_pct": 29.3,
+      "mean_return_pct": 0.763,
+      "median_return_pct": 1.119,
+      "vs_baseline_win_rate_pp": 11.4,
+      "vs_baseline_mean_return_pp": 0.485
+    },
+    "pre_signal": {
+      "label": "Pre-Signal",
+      "n": 16448,
+      "win_rate_pct": 17.6,
+      "mean_return_pct": 0.302,
+      "median_return_pct": 0.376,
+      "vs_baseline_win_rate_pp": -0.3,
+      "vs_baseline_mean_return_pp": 0.024
+    },
     "best_buy": {
       "label": "Best Buy",
-      "n": 12075,
+      "n": 12074,
       "win_rate_pct": 17.9,
       "mean_return_pct": 0.399,
-      "median_return_pct": 0.303,
+      "median_return_pct": 0.304,
       "vs_baseline_win_rate_pp": 0.0,
-      "vs_baseline_mean_return_pp": 0.119
+      "vs_baseline_mean_return_pp": 0.121
     },
     "super_best_buy": {
       "label": "Super Best Buy",
-      "n": 3372,
+      "n": 3370,
       "win_rate_pct": 18.7,
-      "mean_return_pct": 0.367,
+      "mean_return_pct": 0.365,
       "median_return_pct": 0.282,
       "vs_baseline_win_rate_pp": 0.8,
       "vs_baseline_mean_return_pp": 0.087
     },
     "super_best_buy_2": {
       "label": "Super Best Buy 2",
-      "n": 2114,
+      "n": 2113,
       "win_rate_pct": 17.3,
-      "mean_return_pct": 0.391,
-      "median_return_pct": 0.229,
+      "mean_return_pct": 0.39,
+      "median_return_pct": 0.23,
       "vs_baseline_win_rate_pp": -0.6,
-      "vs_baseline_mean_return_pp": 0.111
+      "vs_baseline_mean_return_pp": 0.112
     }
   }
 }
