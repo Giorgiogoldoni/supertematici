@@ -1,57 +1,57 @@
 {
-  "generato": "2026-08-15T07:26:11.581246",
+  "generato": "2026-08-22T07:26:59.015169",
   "horizon_days": 5,
   "success_target_pct": 3.0,
   "baseline": {
-    "n": 163472,
+    "n": 165922,
     "win_rate_pct": 18.1,
-    "mean_return_pct": 0.299
+    "mean_return_pct": 0.295
   },
   "segnali": {
     "rimbalzo": {
       "label": "Rimbalzo",
-      "n": 945,
+      "n": 964,
       "win_rate_pct": 29.8,
-      "mean_return_pct": 0.812,
-      "median_return_pct": 1.13,
+      "mean_return_pct": 0.824,
+      "median_return_pct": 1.131,
       "vs_baseline_win_rate_pp": 11.7,
-      "vs_baseline_mean_return_pp": 0.513
+      "vs_baseline_mean_return_pp": 0.529
     },
     "pre_signal": {
       "label": "Pre-Signal",
-      "n": 16523,
-      "win_rate_pct": 18.1,
-      "mean_return_pct": 0.344,
-      "median_return_pct": 0.396,
-      "vs_baseline_win_rate_pp": -0.0,
-      "vs_baseline_mean_return_pp": 0.045
+      "n": 16672,
+      "win_rate_pct": 18.0,
+      "mean_return_pct": 0.341,
+      "median_return_pct": 0.391,
+      "vs_baseline_win_rate_pp": -0.1,
+      "vs_baseline_mean_return_pp": 0.046
     },
     "best_buy": {
       "label": "Best Buy",
-      "n": 12050,
+      "n": 12212,
       "win_rate_pct": 18.0,
-      "mean_return_pct": 0.406,
-      "median_return_pct": 0.309,
+      "mean_return_pct": 0.403,
+      "median_return_pct": 0.302,
       "vs_baseline_win_rate_pp": -0.1,
-      "vs_baseline_mean_return_pp": 0.107
+      "vs_baseline_mean_return_pp": 0.108
     },
     "super_best_buy": {
       "label": "Super Best Buy",
-      "n": 3398,
+      "n": 3436,
       "win_rate_pct": 19.0,
-      "mean_return_pct": 0.393,
+      "mean_return_pct": 0.394,
       "median_return_pct": 0.303,
       "vs_baseline_win_rate_pp": 0.9,
-      "vs_baseline_mean_return_pp": 0.094
+      "vs_baseline_mean_return_pp": 0.099
     },
     "super_best_buy_2": {
       "label": "Super Best Buy 2",
-      "n": 2128,
-      "win_rate_pct": 17.3,
-      "mean_return_pct": 0.394,
-      "median_return_pct": 0.229,
-      "vs_baseline_win_rate_pp": -0.8,
-      "vs_baseline_mean_return_pp": 0.095
+      "n": 2153,
+      "win_rate_pct": 17.5,
+      "mean_return_pct": 0.407,
+      "median_return_pct": 0.234,
+      "vs_baseline_win_rate_pp": -0.6,
+      "vs_baseline_mean_return_pp": 0.112
     }
   }
 }
