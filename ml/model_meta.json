@@ -1,16 +1,16 @@
 {
-  "trained_at": "2026-09-12T11:26:04.205941",
+  "trained_at": "2026-09-19T11:45:10.545773",
   "horizon_days": 10,
-  "rows_train": 133861,
-  "rows_test": 33512,
+  "rows_train": 134425,
+  "rows_test": 33694,
   "test_period": [
-    "2025-09-25",
-    "2026-08-28"
+    "2025-10-01",
+    "2026-09-04"
   ],
-  "mae_test": 4.5255,
-  "mae_baseline_test": 4.4518,
-  "r2_test": -0.0306,
-  "ic_test": 0.0307,
+  "mae_test": 4.4826,
+  "mae_baseline_test": 4.4104,
+  "r2_test": -0.0319,
+  "ic_test": 0.0229,
   "features": [
     "er",
     "volume_ratio",

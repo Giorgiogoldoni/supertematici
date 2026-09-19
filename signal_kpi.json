@@ -1,57 +1,57 @@
 {
-  "generato": "2026-09-12T11:26:04.910430",
+  "generato": "2026-09-19T11:45:11.423559",
   "horizon_days": 5,
   "success_target_pct": 3.0,
   "baseline": {
-    "n": 168108,
+    "n": 168854,
     "win_rate_pct": 18.0,
-    "mean_return_pct": 0.288
+    "mean_return_pct": 0.281
   },
   "segnali": {
     "rimbalzo": {
       "label": "Rimbalzo",
-      "n": 964,
+      "n": 965,
       "win_rate_pct": 29.8,
-      "mean_return_pct": 0.825,
-      "median_return_pct": 1.131,
+      "mean_return_pct": 0.828,
+      "median_return_pct": 1.132,
       "vs_baseline_win_rate_pp": 11.8,
-      "vs_baseline_mean_return_pp": 0.537
+      "vs_baseline_mean_return_pp": 0.547
     },
     "pre_signal": {
       "label": "Pre-Signal",
-      "n": 16863,
-      "win_rate_pct": 18.1,
-      "mean_return_pct": 0.338,
-      "median_return_pct": 0.382,
-      "vs_baseline_win_rate_pp": 0.1,
-      "vs_baseline_mean_return_pp": 0.05
+      "n": 16938,
+      "win_rate_pct": 18.0,
+      "mean_return_pct": 0.326,
+      "median_return_pct": 0.371,
+      "vs_baseline_win_rate_pp": 0.0,
+      "vs_baseline_mean_return_pp": 0.045
     },
     "best_buy": {
       "label": "Best Buy",
-      "n": 12346,
+      "n": 12365,
       "win_rate_pct": 17.9,
-      "mean_return_pct": 0.387,
-      "median_return_pct": 0.288,
+      "mean_return_pct": 0.383,
+      "median_return_pct": 0.284,
       "vs_baseline_win_rate_pp": -0.1,
-      "vs_baseline_mean_return_pp": 0.099
+      "vs_baseline_mean_return_pp": 0.102
     },
     "super_best_buy": {
       "label": "Super Best Buy",
-      "n": 3457,
-      "win_rate_pct": 19.0,
-      "mean_return_pct": 0.38,
-      "median_return_pct": 0.289,
-      "vs_baseline_win_rate_pp": 1.0,
-      "vs_baseline_mean_return_pp": 0.092
+      "n": 3474,
+      "win_rate_pct": 18.9,
+      "mean_return_pct": 0.364,
+      "median_return_pct": 0.277,
+      "vs_baseline_win_rate_pp": 0.9,
+      "vs_baseline_mean_return_pp": 0.083
     },
     "super_best_buy_2": {
       "label": "Super Best Buy 2",
-      "n": 2168,
-      "win_rate_pct": 17.4,
-      "mean_return_pct": 0.379,
-      "median_return_pct": 0.211,
-      "vs_baseline_win_rate_pp": -0.6,
-      "vs_baseline_mean_return_pp": 0.091
+      "n": 2181,
+      "win_rate_pct": 17.3,
+      "mean_return_pct": 0.358,
+      "median_return_pct": 0.194,
+      "vs_baseline_win_rate_pp": -0.7,
+      "vs_baseline_mean_return_pp": 0.077
     }
   }
 }
